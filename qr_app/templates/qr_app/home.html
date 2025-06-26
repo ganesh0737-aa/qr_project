@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QR Code Generator</title>
+    <style>
+        body {
+            background-color: #f0f8ff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+
+        form {
+            margin: 20px auto;
+            display: inline-block;
+            text-align: left;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px 2px;
+
+        }
+
+        button:hover {
+            background-color: #de5a03;
+
+        }
+
+        input[type="text"] {
+            padding: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+        }
+
+        .qr-container {
+            margin-top: 20px;
+        }
+
+        img {
+            margin-top: 10px;
+            border: 2px solid #000;
+            border-radius: 15px;
+            padding: 5px;
+            background: white;
+        }
+
+        button.gen {
+            margin: 5px 70px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>QR Code Generator</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="gen">Generate</button>
+    </form>
+
+    {% if img_url %}
+    <div class="qr-container">
+        <h3>Generated QR Code:</h3>
+        <img src="{{ img_url }}" alt="QR Code" width="200">
+
+        <h3>Share This QR Code:</h3>
+        <input type="text" value="{{ full_img_url }}" id="qrLink" readonly>
+        <button onclick="copyToClipboard()">Copy</button>
+        <a href="https://wa.me/?text={{ full_img_url }}" target="_blank">
+            <button>Share on WhatsApp</button>
+        </a>
+        <a href="{{ img_url }}" download>
+            <button>Download QR</button>
+        </a>
+    </div>
+    {% endif %}
+
+    <script>
+        function copyToClipboard() {
+            const copyText = document.getElementById("qrLink");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value)
+                .then(() => alert("Link copied!"))
+                .catch(() => alert("Failed to copy."));
+        }
+    </script>
+</body>
+
+</html>
